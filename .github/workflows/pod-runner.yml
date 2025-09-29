@@ -1,0 +1,25 @@
+name: Deploy Dev
+
+on:
+  push:
+    banches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node js
+        uses: actions/setup-node2v3
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy to dev
+        run: |
+          sudo cp dist/ /home/ec2-user/tunes-dev
+          sudo systemctl reload nginx
